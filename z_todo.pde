@@ -1,3 +1,3 @@
-fix de gamelogic
+//fix de gamelogic
 
-zorg eerst dat een mouse click registreerd welke kaart er is gelogd.
+//zorg eerst dat een mouse click registreerd welke kaart er is gelogd.
