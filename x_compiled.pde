@@ -157,6 +157,11 @@ ArrayList<Integer> selectedCards = new ArrayList<Integer>();
 String[] boardCards = new String[gridRows * gridCols]; // DIT MAG MISSCHIEN NIET
 ArrayList<String> remainingDeck = new ArrayList<String>();
 
+int statusBarHeight = 80;
+int setsFound = 0;
+int remainingCards;
+int setsOnTable;
+
 void printSelectedCards(ArrayList<Integer> selectedCards) {
   if (selectedCards.isEmpty()) {
     println("[]");
@@ -231,6 +236,7 @@ void replaceCards(ArrayList<Integer> selectedCards) {
     for (int index : selectedCards) {
         if (!remainingDeck.isEmpty()) {
             boardCards[index] = remainingDeck.remove(0); // remove new card from deck
+            remainingCards--;
         } else {
             boardCards[index] = "removed"; // mark card as removed
         }
@@ -239,23 +245,42 @@ void replaceCards(ArrayList<Integer> selectedCards) {
     redraw();
 }
 
-// Globale variabelen
-int foundSetsCount = 0;
-int remainingDeckSize = 0;
-int setsOnTable = 0;
+int calculateSetsOnTable(String[] boardCards) {
+  int setsCount = 0;
+  for (int i = 0; i < boardCards.length - 2; i++) {
+    for (int j = i + 1; j < boardCards.length - 1; j++) {
+      for (int k = j + 1; k < boardCards.length; k++) {
+        ArrayList<Integer> selectedCards = new ArrayList<Integer>();
+        if (!boardCards[i].equals("removed") && !boardCards[j].equals("removed") && !boardCards[k].equals("removed")) {
+          selectedCards.add(i);
+          selectedCards.add(j);
+          selectedCards.add(k);
+          if (isValidSet(selectedCards, boardCards)) {
+            setsCount++;
+          }
+        }
+      }
+    }
+  }
+  return setsCount;
+}
 
 void drawStatusBar() {
-  fill(200); // Grijs voor de informatiebalk
+  fill(200); // color of bar
   noStroke();
-  rect(0, height - 50, width, 50); // Teken de balk onderaan
+  rect(0, height - statusBarHeight, width, statusBarHeight);
 
-  fill(0); // Zwart voor de tekst
+  fill(0); // color of text
   textSize(16);
+  
   textAlign(LEFT, CENTER);
-  text("Sets gevonden: " + foundSetsCount, 10, height - 25);
+  text("Sets gevonden: " + setsFound, 10, height - (statusBarHeight - 25));
   
   textAlign(CENTER, CENTER);
-  text("Gedekte kaarten: " + remainingDeckSize + " - Sets op tafel: " + setsOnTable, width / 2, height - 25);
+  text("Gedekte kaarten: " + remainingCards, width / 2, height - (statusBarHeight - 25));
+
+  textAlign(RIGHT, CENTER);
+  text("Sets op tafel: " + setsOnTable, width - 25 / 1, height - (statusBarHeight - 25));
 }
 /** GAME LOGIC */
 
@@ -265,22 +290,24 @@ void setup() {
   
   // calculate width and height
   cardWidth = width / gridCols;
-  cardHeight = height / gridRows;
+  cardHeight = (height - statusBarHeight) / gridRows; // remove height of status bar to place it below
   
   // generate deck
   deck = generateDeck(shapes, colors, numbers);
   deck = shuffleDeck(deck);
   
+  remainingCards = deck.length - (gridRows * gridCols);
+  
   //logDeck(deck);
   
-    // set boardCards with the first 9 cards and add the rest to remainingDeck
-    for (int i = 0; i < deck.length; i++) {
-        if (i < 9) {
-            boardCards[i] = deck[i];
-        } else {
-            remainingDeck.add(deck[i]);
-        }
-    }
+  // set boardCards with the first 9 cards and add the rest to remainingDeck
+  for (int i = 0; i < deck.length; i++) {
+      if (i < 9) {
+          boardCards[i] = deck[i];
+      } else {
+          remainingDeck.add(deck[i]);
+      }
+  }
   
   // only draw once
   noLoop();
@@ -288,6 +315,7 @@ void setup() {
 
 void draw() {
   background(255);
+  setsOnTable = calculateSetsOnTable(boardCards);
   drawDeck();
   drawStatusBar();
 }
@@ -301,7 +329,7 @@ void mousePressed() {
       
         // check if card has been selected
         if (selectedCards.contains(cardIndex)) {
-            selectedCards.remove(Integer.valueOf(cardIndex)); // Verwijder op basis van object om juiste verwijdering te garanderen
+            selectedCards.remove(Integer.valueOf(cardIndex)); 
             println("REMOVED CARD: " + boardCards[cardIndex]);
             
         } else if (selectedCards.size() < 3) { // check if there have not yet been 3 cards selected
@@ -320,6 +348,7 @@ void mousePressed() {
             // check if the selected cards are valid as a set
             if (isValidSet(selectedCards, boardCards)) {
                 println("FOUND A SET: ");
+                setsFound++;
                 printSelectedCards(selectedCards);
                 replaceCards(selectedCards);
             } else { // when the selection is not a valid set
@@ -334,7 +363,6 @@ void mousePressed() {
 /** SKETCHING */
 
 /** TODO */
-// move status bar below grid
 // make counters in status bar work
 // make starting screen
 // make ending screen
