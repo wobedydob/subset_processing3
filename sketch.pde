@@ -1,5 +1,5 @@
 /** GAME CONFIGURATION */
-String gameState = "start"; // options: start, playing, stop
+String gameState = "playing"; // options: start, playing, stop
 int btnWidth = 200;
 int btnHeight = 50;
 
@@ -32,8 +32,6 @@ void setup() {
   
   remainingCards = deck.length - (gridRows * gridCols);
   
-  //logDeck(deck);
-  
   // set boardCards with the first 9 cards and add the rest to remainingDeck
   for (int i = 0; i < deck.length; i++) {
       if (i < 9) {
@@ -43,7 +41,7 @@ void setup() {
       }
   }
   
-  // only draw once
+   //only draw once
   noLoop();
 }
 
@@ -56,9 +54,9 @@ void draw() {
   if(gameState == "start") {
     drawStartupScreen();
   } else if (gameState == "playing"){
-    drawDeck();
-    drawStatusBar();
+    drawPlayingScreen();
   } else if (gameState == "stop"){
+    drawStopScreen();
   }
 }
 
@@ -117,8 +115,27 @@ void mousePressed() {
      
             redraw();
         }
+        
+      // De berekening van de knoppositie moet overeenkomen met die in de drawStatusBar
+      int stopBtnX = (width / 2) - (100 / 2);
+      int stopBtnY = height - (statusBarHeight / 2);
+      
+      if (setsOnTable == 0 && mouseX >= stopBtnX && mouseX <= stopBtnX + 100 && mouseY >= stopBtnY && mouseY <= stopBtnY + 30) {
+        gameState = "stop";
+        redraw(); // Optioneel, afhankelijk van je implementatie
+      }
+        
     } else if (gameState == "stop") { // void handleStartupState
-        // do
+    
+      int btnX = (width - btnWidth) / 2;
+      int btnY = height / 2 + 50;
+      
+      // Controleer of de muisklik binnen de grenzen van de 'Terug naar Start' knop valt
+      if (mouseX >= btnX && mouseX <= btnX + btnWidth && mouseY >= btnY && mouseY <= btnY + btnHeight) {
+        resetGame(); // Roep een functie aan om het spel te resetten voor een nieuwe ronde
+        redraw();
+      }
+    
     }
 }
 
@@ -355,21 +372,45 @@ void replaceCards(ArrayList<Integer> selectedCards) {
 }
 
 void drawStatusBar() {
-  fill(200); // color of bar
+  
+  // bar background
+  fill(200); // grey
   noStroke();
   rect(0, height - statusBarHeight, width, statusBarHeight);
 
-  fill(0); // color of text
+  // bar text
+  fill(0); // black
   textSize(16);
   
+  // setsFound
   textAlign(LEFT, CENTER);
   text("Sets gevonden: " + setsFound, 10, height - (statusBarHeight - 25));
   
+  // remainingCards
   textAlign(CENTER, CENTER);
   text("Gedekte kaarten: " + remainingCards, width / 2, height - (statusBarHeight - 25));
 
+  // setsOnTable
   textAlign(RIGHT, CENTER);
   text("Sets op tafel: " + setsOnTable, width - 25 / 1, height - (statusBarHeight - 25));
+  
+  // check if no sets can be made
+  if (setsOnTable == 0) {
+    
+    // stop button
+    fill(255, 0, 0); // red background
+    int stopBtnX = (width / 2) - (100 / 2);
+    int stopBtnY = height - (statusBarHeight / 2);
+    rect(stopBtnX, stopBtnY, 100, 30, 5);
+    
+    // stop button text
+    fill(255); // white
+    textSize(14);
+    textAlign(CENTER, CENTER);
+    text("Stop", stopBtnX + 50, stopBtnY + 15);
+    
+  }
+  
 }
 
 void printSelectedCards(ArrayList<Integer> selectedCards) {
@@ -386,26 +427,77 @@ void printSelectedCards(ArrayList<Integer> selectedCards) {
   println(result);
 }
 
-/** TEST */
+/** GAME STATE FUNCTIONS */
 void drawStartupScreen() {
-  background(0); // Zet de achtergrondkleur naar zwart of een andere kleur naar keuze
-  fill(255); // Zet de vulkleur naar wit voor de tekst en de knop
+  background(0); // black background
+  fill(255); // white text
   
-  // Tekst voor de titel van het spel
-  textSize(32); // Grootte van de tekst
-  textAlign(CENTER, CENTER); // Centreer de tekst
-  text("SubSet Spel", width / 2, height / 3); // Positieer de titel
+  // head title
+  textSize(32);
+  textAlign(CENTER, CENTER); 
+  text("SubSet", width / 2, height / 3);
   
-  // Teken de "Start" knop
-  //int btnWidth = 200; // Breedte van de knop
-  //int btnHeight = 50; // Hoogte van de knop
-  int btnX = (width - btnWidth) / 2; // X positie van de knop, gecentreerd
-  int btnY = (height - btnHeight) / 2; // Y positie van de knop, gecentreerd
+  // without these "duplicated" variables the start button gets destroyed...
+  int btnX = (width - btnWidth) / 2;
+  int btnY = (height - btnHeight) / 2;
   
-  fill(255, 0, 0); // Vulkleur van de knop (rood)
-  rect(btnX, btnY, btnWidth, btnHeight, 10); // Teken de rechthoek met afgeronde hoeken
+  // button
+  fill(255, 0, 0); // red background
+  rect(btnX, btnY, btnWidth, btnHeight, 10);
   
-  fill(255); // Zet de vulkleur naar wit voor de knoptekst
-  textSize(20); // Grootte van de knoptekst
-  text("Start", width / 2, btnY + btnHeight / 2); // Positieer de knoptekst
+  // button text
+  fill(255); // white
+  textSize(20);
+  text("Start", width / 2, btnY + btnHeight / 2);
+}
+
+void drawPlayingScreen() {
+  drawDeck();
+  drawStatusBar();
+}
+
+void drawStopScreen() {
+  background(0); // black background
+  fill(255); // white text
+  textSize(32);
+  textAlign(CENTER, CENTER);
+  
+  // scoreboard
+  text("Spel Gestopt", width / 2, height / 2 - 50);
+  text("Sets gevonden: " + setsFound, width / 2, height / 2);
+
+  // reset button
+  int btnX = (width - btnWidth) / 2;
+  int btnY = height / 2 + 50;
+  fill(255, 0, 0); // red button
+  rect(btnX, btnY, btnWidth, btnHeight, 10);
+
+  // button text
+  fill(255); // white
+  textSize(20);
+  text("Terug naar Start", width / 2, btnY + btnHeight / 2);
+}
+
+void resetGame() {
+  setsFound = 0; // reset the setsFound attribute
+  selectedCards.clear(); // clear selectedCards
+  remainingDeck.clear(); // clear remainingDeck
+
+  // regenerate deck
+  deck = generateDeck(shapes, colors, numbers);
+  deck = shuffleDeck(deck);
+
+  // reset boardCards and remainingDeck
+  for (int i = 0; i < deck.length; i++) {
+      if (i < gridRows * gridCols) {
+          boardCards[i] = deck[i];
+      } else {
+          remainingDeck.add(deck[i]);
+      }
+  }
+
+  remainingCards = deck.length - (gridRows * gridCols); // reset remainingCards
+  setsOnTable = calculateSetsOnTable(boardCards); // reset setsOnTable
+  
+  gameState = "start"; // reset the game
 }
