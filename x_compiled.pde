@@ -4,6 +4,7 @@ String[] colors = {"R", "G", "B"};
 int[] numbers = {1, 2, 3};
 
 String[] deck;
+int maxAmountOfCards = shapes.length * colors.length * numbers.length; // Let the max amount of playable cards be determined by the amount of possibilities
 int cardWidth;
 int cardHeight;
 int gridRows = 3;
@@ -11,7 +12,7 @@ int gridCols = 3;
 
 String[] generateDeck(String[] shapes, String[] colors, int[] numbers) {
   
-  String[] deck = new String[27];
+  String[] deck = new String[maxAmountOfCards];
   int index = 0;
 
   for (int number : numbers) {
@@ -363,6 +364,5 @@ void mousePressed() {
 /** SKETCHING */
 
 /** TODO */
-// make counters in status bar work
 // make starting screen
 // make ending screen
