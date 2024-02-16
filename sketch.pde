@@ -1,3 +1,8 @@
+/** GAME CONFIGURATION */
+String gameState = "start"; // options: start, playing, stop
+int btnWidth = 200;
+int btnHeight = 50;
+
 /** DECK VARIABLES */
 String[] shapes = {"T", "R", "E"};
 String[] colors = {"R", "G", "B"};
@@ -47,49 +52,73 @@ void setup() {
 void draw() {
   background(255);
   setsOnTable = calculateSetsOnTable(boardCards);
-  drawDeck();
-  drawStatusBar();
+  
+  if(gameState == "start") {
+    drawStartupScreen();
+  } else if (gameState == "playing"){
+    drawDeck();
+    drawStatusBar();
+  } else if (gameState == "stop"){
+  }
 }
 
 /** MOUSE PRESSED FUNCTION */
 void mousePressed() {
   
     int cardIndex = getCardIndexFromMousePosition(mouseX, mouseY);
-
-    // check if card is valid and has not been removed yet
-    if (cardIndex >= 0 && !boardCards[cardIndex].equals("removed")) {
-      
-        // check if card has been selected
-        if (selectedCards.contains(cardIndex)) {
-            selectedCards.remove(Integer.valueOf(cardIndex)); 
-            println("REMOVED CARD: " + boardCards[cardIndex]);
-            
-        } else if (selectedCards.size() < 3) { // check if there have not yet been 3 cards selected
-            selectedCards.add(cardIndex);
-            println("ADDED CARD: " + boardCards[cardIndex]);
-        }
-
-        println("SELECTED CARD INDEXES: " + selectedCards);
+    
+    if(gameState == "start"){ // handleStartState
+    
+        // start button position
+        int btnX = (width - btnWidth) / 2;
+        int btnY = (height - btnHeight) / 2;
         
-        println("SELECTED CARDS:");
-        printSelectedCards(selectedCards);
-
-        // check if 3 cards have been selected
-        if (selectedCards.size() == 3) {
-          
-            // check if the selected cards are valid as a set
-            if (isValidSet(selectedCards, boardCards)) {
-                println("FOUND A SET: ");
-                setsFound++;
-                printSelectedCards(selectedCards);
-                replaceCards(selectedCards);
-            } else { // when the selection is not a valid set
-                println("SET IS INVALID: " + selectedCards);
-                printSelectedCards(selectedCards);
-            }
+        // check if start button is pressed
+        if (mouseX >= btnX && mouseX <= btnX + btnWidth && mouseY >= btnY && mouseY <= btnY + btnHeight) {
+          gameState = "playing"; // update the game state
+          redraw();
         }
- 
-        redraw();
+    
+    
+    } else if(gameState == "playing") { // void handlePlayingState
+  
+        // check if card is valid and has not been removed yet
+        if (cardIndex >= 0 && !boardCards[cardIndex].equals("removed")) {
+          
+            // check if card has been selected
+            if (selectedCards.contains(cardIndex)) {
+                selectedCards.remove(Integer.valueOf(cardIndex)); 
+                println("REMOVED CARD: " + boardCards[cardIndex]);
+                
+            } else if (selectedCards.size() < 3) { // check if there have not yet been 3 cards selected
+                selectedCards.add(cardIndex);
+                println("ADDED CARD: " + boardCards[cardIndex]);
+            }
+    
+            println("SELECTED CARD INDEXES: " + selectedCards);
+            
+            println("SELECTED CARDS:");
+            printSelectedCards(selectedCards);
+    
+            // check if 3 cards have been selected
+            if (selectedCards.size() == 3) {
+              
+                // check if the selected cards are valid as a set
+                if (isValidSet(selectedCards, boardCards)) {
+                    println("FOUND A SET: ");
+                    setsFound++;
+                    printSelectedCards(selectedCards);
+                    replaceCards(selectedCards);
+                } else { // when the selection is not a valid set
+                    println("SET IS INVALID: " + selectedCards);
+                    printSelectedCards(selectedCards);
+                }
+            }
+     
+            redraw();
+        }
+    } else if (gameState == "stop") { // void handleStartupState
+        // do
     }
 }
 
@@ -355,4 +384,28 @@ void printSelectedCards(ArrayList<Integer> selectedCards) {
   }
   result = result.substring(0, result.length() - 2) + "]";
   println(result);
+}
+
+/** TEST */
+void drawStartupScreen() {
+  background(0); // Zet de achtergrondkleur naar zwart of een andere kleur naar keuze
+  fill(255); // Zet de vulkleur naar wit voor de tekst en de knop
+  
+  // Tekst voor de titel van het spel
+  textSize(32); // Grootte van de tekst
+  textAlign(CENTER, CENTER); // Centreer de tekst
+  text("SubSet Spel", width / 2, height / 3); // Positieer de titel
+  
+  // Teken de "Start" knop
+  //int btnWidth = 200; // Breedte van de knop
+  //int btnHeight = 50; // Hoogte van de knop
+  int btnX = (width - btnWidth) / 2; // X positie van de knop, gecentreerd
+  int btnY = (height - btnHeight) / 2; // Y positie van de knop, gecentreerd
+  
+  fill(255, 0, 0); // Vulkleur van de knop (rood)
+  rect(btnX, btnY, btnWidth, btnHeight, 10); // Teken de rechthoek met afgeronde hoeken
+  
+  fill(255); // Zet de vulkleur naar wit voor de knoptekst
+  textSize(20); // Grootte van de knoptekst
+  text("Start", width / 2, btnY + btnHeight / 2); // Positieer de knoptekst
 }
