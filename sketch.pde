@@ -1,8 +1,7 @@
 /** GAME CONFIGURATION */
-String gameState = "stop"; // options: start, playing, stop
+String gameState = "start"; // options: start, playing, stop
 
 /** START SCREEN VARIABLES **/
-int startBackgroundColor = 0;
 int btnWidth = 200;
 int btnHeight = 50;
 
