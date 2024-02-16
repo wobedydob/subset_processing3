@@ -1,5 +1,8 @@
 /** GAME CONFIGURATION */
-String gameState = "playing"; // options: start, playing, stop
+String gameState = "stop"; // options: start, playing, stop
+
+/** START SCREEN VARIABLES **/
+int startBackgroundColor = 0;
 int btnWidth = 200;
 int btnHeight = 50;
 
@@ -34,11 +37,11 @@ void setup() {
   
   // set boardCards with the first 9 cards and add the rest to remainingDeck
   for (int i = 0; i < deck.length; i++) {
-      if (i < 9) {
-          boardCards[i] = deck[i];
-      } else {
-          remainingDeck.add(deck[i]);
-      }
+    if (i < 9) {
+      boardCards[i] = deck[i];
+    } else {
+      remainingDeck.add(deck[i]);
+    }
   }
   
    //only draw once
@@ -48,95 +51,113 @@ void setup() {
 
 /** DRAW FUNCTION */
 void draw() {
-  background(255);
+  background(white);
   setsOnTable = calculateSetsOnTable(boardCards);
   
-  if(gameState == "start") {
-    drawStartupScreen();
-  } else if (gameState == "playing"){
-    drawPlayingScreen();
-  } else if (gameState == "stop"){
-    drawStopScreen();
+    switch(gameState) {
+    case "start":
+      drawStartupScreen();
+      break;
+    case "playing":
+      drawPlayingScreen();
+      break;
+    case "stop":
+       drawStopScreen(); 
+      break;
   }
+  
 }
 
 /** MOUSE PRESSED FUNCTION */
 void mousePressed() {
+    
+  switch(gameState) {
+    case "start":
+      handleStartState();
+      break;
+    case "playing":
+      handlePlayingState();
+      break;
+    case "stop":
+       handleStopState(); 
+      break;
+  }
   
-    int cardIndex = getCardIndexFromMousePosition(mouseX, mouseY);
-    
-    if(gameState == "start"){ // handleStartState
-    
-        // start button position
-        int btnX = (width - btnWidth) / 2;
-        int btnY = (height - btnHeight) / 2;
-        
-        // check if start button is pressed
-        if (mouseX >= btnX && mouseX <= btnX + btnWidth && mouseY >= btnY && mouseY <= btnY + btnHeight) {
-          gameState = "playing"; // update the game state
-          redraw();
-        }
-    
-    
-    } else if(gameState == "playing") { // void handlePlayingState
+}
+
+void handleStartState() {
+
+  // start button position
+  int btnX = (width - btnWidth) / 2;
+  int btnY = (height - btnHeight) / 2;
   
-        // check if card is valid and has not been removed yet
-        if (cardIndex >= 0 && !boardCards[cardIndex].equals("removed")) {
-          
-            // check if card has been selected
-            if (selectedCards.contains(cardIndex)) {
-                selectedCards.remove(Integer.valueOf(cardIndex)); 
-                println("REMOVED CARD: " + boardCards[cardIndex]);
-                
-            } else if (selectedCards.size() < 3) { // check if there have not yet been 3 cards selected
-                selectedCards.add(cardIndex);
-                println("ADDED CARD: " + boardCards[cardIndex]);
-            }
-    
-            println("SELECTED CARD INDEXES: " + selectedCards);
-            
-            println("SELECTED CARDS:");
-            printSelectedCards(selectedCards);
-    
-            // check if 3 cards have been selected
-            if (selectedCards.size() == 3) {
-              
-                // check if the selected cards are valid as a set
-                if (isValidSet(selectedCards, boardCards)) {
-                    println("FOUND A SET: ");
-                    setsFound++;
-                    printSelectedCards(selectedCards);
-                    replaceCards(selectedCards);
-                } else { // when the selection is not a valid set
-                    println("SET IS INVALID: " + selectedCards);
-                    printSelectedCards(selectedCards);
-                }
-            }
-     
-            redraw();
-        }
-        
-      // De berekening van de knoppositie moet overeenkomen met die in de drawStatusBar
-      int stopBtnX = (width / 2) - (100 / 2);
-      int stopBtnY = height - (statusBarHeight / 2);
-      
-      if (setsOnTable == 0 && mouseX >= stopBtnX && mouseX <= stopBtnX + 100 && mouseY >= stopBtnY && mouseY <= stopBtnY + 30) {
-        gameState = "stop";
-        redraw(); // Optioneel, afhankelijk van je implementatie
-      }
-        
-    } else if (gameState == "stop") { // void handleStartupState
-    
-      int btnX = (width - btnWidth) / 2;
-      int btnY = height / 2 + 50;
-      
-      // Controleer of de muisklik binnen de grenzen van de 'Terug naar Start' knop valt
-      if (mouseX >= btnX && mouseX <= btnX + btnWidth && mouseY >= btnY && mouseY <= btnY + btnHeight) {
-        resetGame(); // Roep een functie aan om het spel te resetten voor een nieuwe ronde
-        redraw();
-      }
-    
+  // check if start button is pressed
+  if (mouseX >= btnX && mouseX <= btnX + btnWidth && mouseY >= btnY && mouseY <= btnY + btnHeight) {
+    gameState = "playing"; // update the game state
+    redraw();
+  }
+  
+}
+
+void handlePlayingState() {
+  
+  int cardIndex = getCardIndexFromMousePosition(mouseX, mouseY);
+  
+  // check if card is valid and has not been removed yet
+  if (cardIndex >= 0 && !boardCards[cardIndex].equals("removed")) {
+  
+    // check if card has been selected
+    if (selectedCards.contains(cardIndex)) {
+      selectedCards.remove(Integer.valueOf(cardIndex)); 
+      println("REMOVED CARD: " + boardCards[cardIndex]);
+    } else if (selectedCards.size() < 3) { // check if there have not yet been 3 cards selected
+      selectedCards.add(cardIndex);
+      println("ADDED CARD: " + boardCards[cardIndex]);
     }
+    
+    println("SELECTED CARD INDEXES: " + selectedCards);
+    println("SELECTED CARDS:");
+    printSelectedCards(selectedCards);
+    
+    // check if 3 cards have been selected
+    if (selectedCards.size() == 3) {
+      
+      // check if the selected cards are valid as a set
+      if (isValidSet(selectedCards, boardCards)) {
+        println("FOUND A SET: ");
+        setsFound++;
+        printSelectedCards(selectedCards);
+        replaceCards(selectedCards);
+      } else { // when the selection is not a valid set
+        println("SET IS INVALID: " + selectedCards);
+        printSelectedCards(selectedCards);
+      }
+    }
+     
+    redraw();
+  }
+    
+  // determine button position based on statusBarHeight
+  int stopBtnX = (width / 2) - (100 / 2);
+  int stopBtnY = height - (statusBarHeight / 2);
+  
+  if (setsOnTable == 0 && mouseX >= stopBtnX && mouseX <= stopBtnX + 100 && mouseY >= stopBtnY && mouseY <= stopBtnY + 30) {
+    gameState = "stop"; // update the game state
+    redraw();
+  }
+}
+
+void handleStopState() {
+
+  int btnX = (width - btnWidth) / 2;
+  int btnY = height / 2 + 50;
+  
+  // check if reset button is pressed
+  if (mouseX >= btnX && mouseX <= btnX + btnWidth && mouseY >= btnY && mouseY <= btnY + btnHeight) {
+    resetGame(); // reset the game
+    redraw();
+  }
+  
 }
 
 /** DECK FUNCTIONS */
@@ -180,17 +201,17 @@ void logDeck(String[] deck) {
 
 void drawDeck() {
 
-    // calculate amount of cards based on gridRows * gridCols
-    for (int i = 0; i < gridRows * gridCols; i++) {
-      
+  // calculate amount of cards based on gridRows * gridCols
+  for (int i = 0; i < gridRows * gridCols; i++) {
+  
     // check if card exists and has not been removed yey
-        if (boardCards[i] != null && !boardCards[i].equals("removed")) {
-            int x = (i % gridCols) * cardWidth;
-            int y = (i / gridCols) * cardHeight;
-            drawCard(boardCards[i], x, y, cardWidth, cardHeight, i);
-        }
-        
+    if (boardCards[i] != null && !boardCards[i].equals("removed")) {
+      int x = (i % gridCols) * cardWidth;
+      int y = (i / gridCols) * cardHeight;
+      drawCard(boardCards[i], x, y, cardWidth, cardHeight, i);
     }
+  
+  }
     
 }
 
@@ -214,13 +235,13 @@ void drawCard(String card, int x, int y, int cardWidth, int cardHeight, int inde
   }
 
   // add border to the card
+  stroke(black);
   noFill();
-  stroke(0);
   
   // add red border to selected card
   if (selectedCards.contains(index)) {
     strokeWeight(3);
-    stroke(255, 0, 0);
+    stroke(red);
   } else {
     strokeWeight(1);
   }
@@ -270,16 +291,16 @@ color getColor(String colorCode) {
   color c;
   switch (colorCode) {
     case "R":
-      c = color(255, 0, 0);
+      c = red;
       break;
     case "G":
-      c = color(0, 255, 0);
+      c = green;
       break;
     case "B":
-      c = color(0, 0, 255);
+      c = blue;
       break;
     default:
-      c = color(0, 0, 0);
+      c = black;
       break;
   }
   
@@ -374,12 +395,12 @@ void replaceCards(ArrayList<Integer> selectedCards) {
 void drawStatusBar() {
   
   // bar background
-  fill(200); // grey
+  fill(grey);
   noStroke();
   rect(0, height - statusBarHeight, width, statusBarHeight);
 
   // bar text
-  fill(0); // black
+  fill(black);
   textSize(16);
   
   // setsFound
@@ -398,13 +419,13 @@ void drawStatusBar() {
   if (setsOnTable == 0) {
     
     // stop button
-    fill(255, 0, 0); // red background
+    fill(red); // red background
     int stopBtnX = (width / 2) - (100 / 2);
     int stopBtnY = height - (statusBarHeight / 2);
     rect(stopBtnX, stopBtnY, 100, 30, 5);
     
     // stop button text
-    fill(255); // white
+    fill(white); // white
     textSize(14);
     textAlign(CENTER, CENTER);
     text("Stop", stopBtnX + 50, stopBtnY + 15);
@@ -429,8 +450,8 @@ void printSelectedCards(ArrayList<Integer> selectedCards) {
 
 /** GAME STATE FUNCTIONS */
 void drawStartupScreen() {
-  background(0); // black background
-  fill(255); // white text
+  background(black);
+  fill(white); // text
   
   // head title
   textSize(32);
@@ -442,11 +463,11 @@ void drawStartupScreen() {
   int btnY = (height - btnHeight) / 2;
   
   // button
-  fill(255, 0, 0); // red background
+  fill(red); // background
   rect(btnX, btnY, btnWidth, btnHeight, 10);
   
   // button text
-  fill(255); // white
+  fill(white);
   textSize(20);
   text("Start", width / 2, btnY + btnHeight / 2);
 }
@@ -457,8 +478,8 @@ void drawPlayingScreen() {
 }
 
 void drawStopScreen() {
-  background(0); // black background
-  fill(255); // white text
+  background(black);
+  fill(white); // text
   textSize(32);
   textAlign(CENTER, CENTER);
   
@@ -469,11 +490,11 @@ void drawStopScreen() {
   // reset button
   int btnX = (width - btnWidth) / 2;
   int btnY = height / 2 + 50;
-  fill(255, 0, 0); // red button
+  fill(red);
   rect(btnX, btnY, btnWidth, btnHeight, 10);
 
   // button text
-  fill(255); // white
+  fill(white);
   textSize(20);
   text("Terug naar Start", width / 2, btnY + btnHeight / 2);
 }
