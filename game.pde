@@ -12,23 +12,6 @@ String[] boardCards = new String[gridRows * gridCols];
 ArrayList<String> remainingDeck = new ArrayList<String>();
 int statusBarHeight = 80, setsFound = 0, remainingCards, setsOnTable;
 
-/** MOUSE PRESSED FUNCTION */
-void mousePressed() {
-    
-  switch(gameState) {
-    case "start":
-      handleStartState();
-      break;
-    case "playing":
-      handlePlayingState();
-      break;
-    case "stop":
-       handleStopState(); 
-      break;
-  }
-  
-}
-
 void handleStartState() {
 
   // start button position
@@ -105,77 +88,6 @@ void handleStopState() {
 }
 
 /** GAME LOGIC FUNCTIONS */
-int getCardIndexFromMousePosition(int mouseX, int mouseY) {
-  
-  int column = mouseX / cardWidth;
-  int row = mouseY / cardHeight;
-  
-  if (column >= gridCols || row >= gridRows) {
-    return -1; // w
-  }
-  
-  return row * gridCols + column;
-}
-
-boolean isValidSet(ArrayList<Integer> selectedCards, String[] deck) {
-  
-  // make sure there are 3 cards selected
-  if (selectedCards.size() != 3) {
-    return false;
-  }
-
-  // extract card properties
-  int[][] properties = new int[3][3]; // [card][property (0=number, 1=color, 2=shape)]
-  for (int i = 0; i < 3; i++) {
-    String card = deck[selectedCards.get(i)];
-    properties[i][0] = card.charAt(0) - '0'; // number
-    properties[i][1] = card.charAt(1); // color
-    properties[i][2] = card.charAt(2); // shape
-  }
-
-  // compare properties
-  for (int property = 0; property < 3; property++) {
-    boolean allSame = true;
-    boolean allDifferent = true;
-    
-    for (int i = 0; i < 2; i++) {
-      for (int j = i + 1; j < 3; j++) {
-        if (properties[i][property] != properties[j][property]) {
-          allSame = false;
-        } else {
-          allDifferent = false;
-        }
-      }
-    }
-
-    if (!allSame && !allDifferent) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-int calculateSetsOnTable(String[] boardCards) {
-  int setsCount = 0;
-  for (int i = 0; i < boardCards.length - 2; i++) {
-    for (int j = i + 1; j < boardCards.length - 1; j++) {
-      for (int k = j + 1; k < boardCards.length; k++) {
-        ArrayList<Integer> selectedCards = new ArrayList<Integer>();
-        if (!boardCards[i].equals("removed") && !boardCards[j].equals("removed") && !boardCards[k].equals("removed")) {
-          selectedCards.add(i);
-          selectedCards.add(j);
-          selectedCards.add(k);
-          if (isValidSet(selectedCards, boardCards)) {
-            setsCount++;
-          }
-        }
-      }
-    }
-  }
-  return setsCount;
-}
-
 void replaceCards(ArrayList<Integer> selectedCards) {
     for (int index : selectedCards) {
         if (!remainingDeck.isEmpty()) {
@@ -318,4 +230,75 @@ void resetGame() {
   setsOnTable = calculateSetsOnTable(boardCards); // reset setsOnTable
   
   gameState = "start"; // reset the game
+}
+
+int getCardIndexFromMousePosition(int mouseX, int mouseY) {
+  
+  int column = mouseX / cardWidth;
+  int row = mouseY / cardHeight;
+  
+  if (column >= gridCols || row >= gridRows) {
+    return -1; // w
+  }
+  
+  return row * gridCols + column;
+}
+
+boolean isValidSet(ArrayList<Integer> selectedCards, String[] deck) {
+  
+  // make sure there are 3 cards selected
+  if (selectedCards.size() != 3) {
+    return false;
+  }
+
+  // extract card properties
+  int[][] properties = new int[3][3]; // [card][property (0=number, 1=color, 2=shape)]
+  for (int i = 0; i < 3; i++) {
+    String card = deck[selectedCards.get(i)];
+    properties[i][0] = card.charAt(0) - '0'; // number
+    properties[i][1] = card.charAt(1); // color
+    properties[i][2] = card.charAt(2); // shape
+  }
+
+  // compare properties
+  for (int property = 0; property < 3; property++) {
+    boolean allSame = true;
+    boolean allDifferent = true;
+    
+    for (int i = 0; i < 2; i++) {
+      for (int j = i + 1; j < 3; j++) {
+        if (properties[i][property] != properties[j][property]) {
+          allSame = false;
+        } else {
+          allDifferent = false;
+        }
+      }
+    }
+
+    if (!allSame && !allDifferent) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+int calculateSetsOnTable(String[] boardCards) {
+  int setsCount = 0;
+  for (int i = 0; i < boardCards.length - 2; i++) {
+    for (int j = i + 1; j < boardCards.length - 1; j++) {
+      for (int k = j + 1; k < boardCards.length; k++) {
+        ArrayList<Integer> selectedCards = new ArrayList<Integer>();
+        if (!boardCards[i].equals("removed") && !boardCards[j].equals("removed") && !boardCards[k].equals("removed")) {
+          selectedCards.add(i);
+          selectedCards.add(j);
+          selectedCards.add(k);
+          if (isValidSet(selectedCards, boardCards)) {
+            setsCount++;
+          }
+        }
+      }
+    }
+  }
+  return setsCount;
 }

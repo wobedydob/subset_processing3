@@ -44,3 +44,20 @@ void draw() {
   }
   
 }
+
+/** MOUSE PRESSED FUNCTION */
+void mousePressed() {
+    
+  switch(gameState) {
+    case "start":
+      handleStartState();
+      break;
+    case "playing":
+      handlePlayingState();
+      break;
+    case "stop":
+       handleStopState(); 
+      break;
+  }
+  
+}

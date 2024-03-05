@@ -8,6 +8,22 @@ int cardWidth, cardHeight;
 int gridRows = 3, gridCols = 3;
 
 /** DECK FUNCTIONS */
+void drawDeck() {
+
+  // calculate amount of cards based on gridRows * gridCols
+  for (int i = 0; i < gridRows * gridCols; i++) {
+  
+    // check if card exists and has not been removed yey
+    if (boardCards[i] != null && !boardCards[i].equals("removed")) {
+      int x = (i % gridCols) * cardWidth;
+      int y = (i / gridCols) * cardHeight;
+      drawCard(boardCards[i], x, y, cardWidth, cardHeight, i);
+    }
+  
+  }
+    
+}
+
 String[] generateDeck(String[] shapes, String[] colors, int[] numbers) {
   
   String[] deck = new String[maxAmountOfCards];
@@ -38,20 +54,4 @@ String[] shuffleDeck(String[] deck) {
   }
   
   return deck;
-}
-
-void drawDeck() {
-
-  // calculate amount of cards based on gridRows * gridCols
-  for (int i = 0; i < gridRows * gridCols; i++) {
-  
-    // check if card exists and has not been removed yey
-    if (boardCards[i] != null && !boardCards[i].equals("removed")) {
-      int x = (i % gridCols) * cardWidth;
-      int y = (i / gridCols) * cardHeight;
-      drawCard(boardCards[i], x, y, cardWidth, cardHeight, i);
-    }
-  
-  }
-    
 }
