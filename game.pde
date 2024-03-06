@@ -12,6 +12,28 @@ String[] boardCards = new String[gridRows * gridCols];
 ArrayList<String> remainingDeck = new ArrayList<String>();
 int statusBarHeight = 80, setsFound = 0, remainingCards, setsOnTable;
 
+void initializeGame() {  
+  // calculate width and height
+  cardWidth = width / gridCols;
+  cardHeight = (height - statusBarHeight) / gridRows; // remove height of status bar to place it below
+  
+  // generate deck
+  deck = generateDeck(shapes, colors, numbers);
+  deck = shuffleDeck(deck);
+  
+  remainingCards = deck.length - (gridRows * gridCols);
+  
+  // set boardCards with the first 9 cards and add the rest to remainingDeck
+  for (int i = 0; i < deck.length; i++) {
+    if (i < 9) {
+      boardCards[i] = deck[i];
+    } else {
+      remainingDeck.add(deck[i]);
+    }
+  }
+  
+}
+
 void handleStartState() {
 
   // start button position
@@ -244,11 +266,14 @@ void resetGame() {
   gameState = "start"; // reset the game
 }
 
-void throwError(String errorMessage) 
+void throwError(String errorMessage, boolean exit) 
 {
   gameState = "ERROR";
   println("[ERROR] " + errorMessage);
-  exit();
+  
+  if(exit) {
+    exit();
+  }
 }
 
 int getCardIndexFromMousePosition(int mouseX, int mouseY) {

@@ -2,26 +2,12 @@
 void setup() {
   size(600, 600);
   
-  // calculate width and height
-  cardWidth = width / gridCols;
-  cardHeight = (height - statusBarHeight) / gridRows; // remove height of status bar to place it below
-  
-  // generate deck
-  deck = generateDeck(shapes, colors, numbers);
-  deck = shuffleDeck(deck);
-  
-  remainingCards = deck.length - (gridRows * gridCols);
-  
-  // set boardCards with the first 9 cards and add the rest to remainingDeck
-  for (int i = 0; i < deck.length; i++) {
-    if (i < 9) {
-      boardCards[i] = deck[i];
-    } else {
-      remainingDeck.add(deck[i]);
-    }
+  if (testing) {
+    initializeTesting();
+  } else {
+    initializeGame();
   }
-  
-   //only draw once
+
   noLoop();
 }
 
@@ -42,7 +28,7 @@ void draw() {
        drawStopScreen(); 
       break;
     default:
-      throwError("Invalid game state given '" + gameState + "'");
+      throwError("Invalid game state given '" + gameState + "'", true);
       break;
   }
   

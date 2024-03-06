@@ -1,7 +1,7 @@
 void drawCard(String card, int x, int y, int cardWidth, int cardHeight, int index) {
   
   if(!cardExists(card)) {
-    throwError("Invalid value for card given '" + card + "'");
+    throwError("Invalid value for card given '" + card + "'", true);
   }
   
   int number = card.charAt(0) - '0'; // calculate ascii character and convert to number (1, 2, 3)
@@ -58,7 +58,7 @@ void drawShape(String shape, String colorCode, int x, int y, int w, int h) {
       drawEllipse(x, y, w, h);
       break;
     default:
-      throwError("Invalid value for card shape given '" + shape + "'");
+      throwError("Invalid value for card shape given '" + shape + "'", true);
       break;
   }
   
