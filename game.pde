@@ -1,5 +1,5 @@
 /** GAME CONFIGURATION */
-String gameState = "playing"; // options: start, playing, stop
+String gameState = "start"; // options: start, playing, stop
 
 /** START SCREEN VARIABLES **/
 int btnWidth = 200;
