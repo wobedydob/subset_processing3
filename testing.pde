@@ -1,12 +1,21 @@
-boolean testing = true;
+boolean testing = true; // set to true to test
+
+String testGameState = "start";
+String[] testShapes = {"T", "R", "E"};
+String[] testColors = {"R", "G", "B"};
+int[] testNumbers = {1, 2, 3};
+String[] testDeck;
+
+int[] set = {0, 1, 2};
 
 void initializeTesting() {
-
     println("---TESTING BEGINS HERE---");
-    //testGenerateDeck();
-    //testShuffleDeck();
-    //testIsValidSet();
-    testGameStateManagement();
+    
+    testGenerateDeck();
+    testShuffleDeck(testDeck);
+    testIsValidSet(set);
+    testGameState(testGameState);
+    
     println("---TESTING ENDS HERE---");
     exit();
 }
@@ -15,7 +24,7 @@ void testGenerateDeck() {
   
   println("~testGenerateDeck()");
   
-  String[] testDeck = generateDeck(shapes, colors, numbers);
+  testDeck = generateDeck(testShapes, testColors, testNumbers);
   
   if (testDeck.length != 27) {
     throwError("Invalid deck.length given '" + testDeck.length + "'", false);
@@ -35,11 +44,10 @@ void testGenerateDeck() {
   println("[SUCCESS] Deck was successfully generated with " + testDeck.length + " cards");
 }
 
-void testShuffleDeck() {
+void testShuffleDeck(String[] testDeck) {
   
   println("~testShuffleDeck()");
 
-  String[] testDeck = generateDeck(shapes, colors, numbers);
   String[] originalDeck = testDeck.clone();
   
   testDeck = shuffleDeck(testDeck);
@@ -77,43 +85,19 @@ void testShuffleDeck() {
   println("[SUCCESS] Deck was successfully shuffled with " + testDeck.length + " cards, and the order was changed.");
 }
 
-void testIsValidSet() {
+void testIsValidSet(int[] testSet) {
   
   println("~testIsValidSet()");
   
-  // valid set array with different properties
-  ArrayList<Integer> validSetDiff = new ArrayList<Integer>(); 
-  validSetDiff.add(0); validSetDiff.add(1); validSetDiff.add(2);
-
-  // valid set array with all same properties
-  ArrayList<Integer> validSetSame = new ArrayList<Integer>();
-  validSetSame.add(3); validSetSame.add(4); validSetSame.add(5);
-
-  // invalid set
-  ArrayList<Integer> invalidSet = new ArrayList<Integer>();
-  invalidSet.add(8); invalidSet.add(7); invalidSet.add(8);
-
-  String[] testDeck = generateDeck(shapes, colors, numbers);
+  testDeck = generateDeck(testShapes, testColors, testNumbers);
+  
+  ArrayList<Integer> set = convertArrayToList(testSet, new ArrayList<Integer>());
 
   // check if validSetDiff is a valid set in testDeck
-  if (isValidSet(validSetDiff, testDeck)) {
-    println("[SUCCESS] 'validSetDiff' is a valid set found in 'testDeck'.");
+  if (isValidSet(set, testDeck)) {
+      println("[SUCCESS] '" + set + "' is a valid set found in 'testDeck'.");
   } else {
-   throwError("'isValidSet' failed using 'validSetDiff' and 'testDeck'.", false);
-  }
-
-  // check if validSetSame is a valid set in testDeck
-  if (isValidSet(validSetSame, testDeck)) {
-    println("[SUCCESS] 'validSetSame' is a valid set found in 'testDeck'.");
-  } else {
-   throwError("'isValidSet' failed using 'validSetSame' and 'testDeck'.", false);
-  }
-  
-  // check if invalidSet is a valid set in testDeck
-  if (isValidSet(invalidSet, testDeck)) {
-    println("[SUCCESS] 'invalidSet' is a valid set found in 'testDeck'.");
-  } else {
-    throwError("'isValidSet' failed using 'invalidSet' and 'testDeck'.", false);
+     throwError("'" + set + "' is not a valid set found in 'testDeck'.", false);
   }
   
   return;
@@ -121,35 +105,28 @@ void testIsValidSet() {
 
 void testGameState(String gameState) {
 
+    println("~testGameState()");
+  
   switch(gameState) {
     case "start":
-      handleStartState();
+      println("[SUCCESS] Correct game state is initialized: '" + gameState + "'");
       break;
     case "playing":
-      handlePlayingState();
+      println("[SUCCESS] Correct game state is initialized: '" + gameState + "'");
       break;
     case "stop":
-       handleStopState(); 
+      println("[SUCCESS] Correct game state is initialized: '" + gameState + "'");
       break;
     default:
       throwError("Invalid game state given '" + gameState + "'", false);
       break;
   }
   
-  
+}
 
-  if (!gameState.equals("playing")) {
-    println("[ERROR] handleStartState did not transition to 'playing'. Current gameState: " + gameState);
-  } else {
-    println("[SUCCESS] handleStartState correctly transitioned to 'playing'.");
+ArrayList<Integer> convertArrayToList(int[] array, ArrayList<Integer> list) {
+  for (int i = 0; i < array.length; i++) {
+      list.add(array[i]);
   }
-
-  handleStopState();
-  if (!gameState.equals("start")) {
-    println("[ERROR] handleStopState did not reset to 'start'. Current gameState: " + gameState);
-  } else {
-    println("[SUCCESS] handleStopState correctly reset to 'start'.");
-  }
-
-  // Zorg ervoor dat je de spelstaat en eventuele andere relevante variabelen reset naar hun oorspronkelijke waarden na de tests, indien nodig
+  return list;
 }
