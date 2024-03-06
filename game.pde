@@ -1,5 +1,5 @@
 /** GAME CONFIGURATION */
-String gameState = "reset"; // options: start, playing, stop
+String gameState = "playing"; // options: start, playing, stop
 
 /** START SCREEN VARIABLES **/
 int btnWidth = 200;
@@ -220,28 +220,6 @@ void drawStopScreen() {
   text("Terug naar Start", width / 2, btnY + btnHeight / 2);
 }
 
-void drawErrorScreen(String errorMessage) {
-  
-  background(black);
-  fill(white); // text
-  textSize(32);
-  textAlign(CENTER, CENTER);
-  
-  text(errorMessage , width / 2, height / 2 - 50);
-  
-  // reset button
-  int btnX = (width - btnWidth) / 2;
-  int btnY = height / 2 + 50;
-  fill(red);
-  rect(btnX, btnY, btnWidth, btnHeight, 10);
-
-  // button text
-  fill(white);
-  textSize(20);
-  text("Exit Game", width / 2, btnY + btnHeight / 2);
-  
-}
-
 void resetGame() {
   setsFound = 0; // reset the setsFound attribute
   selectedCards.clear(); // clear selectedCards
@@ -264,6 +242,13 @@ void resetGame() {
   setsOnTable = calculateSetsOnTable(boardCards); // reset setsOnTable
   
   gameState = "start"; // reset the game
+}
+
+void throwError(String errorMessage) 
+{
+  gameState = "ERROR";
+  println("[ERROR] " + errorMessage);
+  exit();
 }
 
 int getCardIndexFromMousePosition(int mouseX, int mouseY) {

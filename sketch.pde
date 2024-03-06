@@ -42,7 +42,7 @@ void draw() {
        drawStopScreen(); 
       break;
     default:
-      drawErrorScreen("Invalid game state given '" + gameState + "'");
+      throwError("Invalid game state given '" + gameState + "'");
       break;
   }
   

@@ -1,5 +1,9 @@
 void drawCard(String card, int x, int y, int cardWidth, int cardHeight, int index) {
   
+  if(!cardExists(card)) {
+    throwError("Invalid value for card given '" + card + "'");
+  }
+  
   int number = card.charAt(0) - '0'; // calculate ascii character and convert to number (1, 2, 3)
   String colorCode = card.substring(1, 2);
   String shape = card.substring(2);
@@ -53,6 +57,9 @@ void drawShape(String shape, String colorCode, int x, int y, int w, int h) {
     case "E":
       drawEllipse(x, y, w, h);
       break;
+    default:
+      throwError("Invalid value for card shape given '" + shape + "'");
+      break;
   }
   
 }
@@ -88,4 +95,62 @@ color getColor(String colorCode) {
   }
   
   return c;
+}
+
+boolean cardExists(String card) {
+  if (card == null || card.length() != 3) {
+    return false; // Ongeldige kaartformat
+  }
+
+  // Extract eigenschappen van de kaart
+  String number = card.substring(0, 1);
+  String colorCode = card.substring(1, 2);
+  String shape = card.substring(2, 3);
+
+  boolean numberExists = numberExists(number);
+  boolean colorExists = colorExists(colorCode);
+  boolean shapeExists = shapeExists( shape);
+  
+  if(!numberExists && !colorExists && !shapeExists) {
+    return false;
+  }
+
+  return true;
+}
+
+boolean numberExists(String number) 
+{
+  boolean numberExists = false;
+  for (int num : numbers) {
+    if (Integer.toString(num).equals(number)) {
+      numberExists = true;
+      break;
+    }
+  }
+  return numberExists;
+}
+
+
+boolean colorExists(String colorCode) 
+{
+  boolean colorExists = false;
+  for (String c : colors) {
+    if (c.equals(colorCode)) {
+      colorExists = true;
+      break;
+    }
+  }
+  return colorExists;
+}
+
+boolean shapeExists(String shapeCode) 
+{
+  boolean shapeExists = false;
+  for (String shape : shapes) {
+    if (shape.equals(shapeCode)) {
+      shapeExists = true;
+      break;
+    }
+  }
+  return shapeExists;
 }
