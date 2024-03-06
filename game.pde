@@ -1,5 +1,5 @@
 /** GAME CONFIGURATION */
-String gameState = "start"; // options: start, playing, stop
+String gameState = "reset"; // options: start, playing, stop
 
 /** START SCREEN VARIABLES **/
 int btnWidth = 200;
@@ -83,6 +83,18 @@ void handleStopState() {
   if (mouseX >= btnX && mouseX <= btnX + btnWidth && mouseY >= btnY && mouseY <= btnY + btnHeight) {
     resetGame(); // reset the game
     redraw();
+  }
+  
+}
+
+void handleErrorState() {
+
+  int btnX = (width - btnWidth) / 2;
+  int btnY = height / 2 + 50;
+  
+  // check if exit button is pressed
+  if (mouseX >= btnX && mouseX <= btnX + btnWidth && mouseY >= btnY && mouseY <= btnY + btnHeight) {
+    exit();
   }
   
 }
@@ -206,6 +218,28 @@ void drawStopScreen() {
   fill(white);
   textSize(20);
   text("Terug naar Start", width / 2, btnY + btnHeight / 2);
+}
+
+void drawErrorScreen(String errorMessage) {
+  
+  background(black);
+  fill(white); // text
+  textSize(32);
+  textAlign(CENTER, CENTER);
+  
+  text(errorMessage , width / 2, height / 2 - 50);
+  
+  // reset button
+  int btnX = (width - btnWidth) / 2;
+  int btnY = height / 2 + 50;
+  fill(red);
+  rect(btnX, btnY, btnWidth, btnHeight, 10);
+
+  // button text
+  fill(white);
+  textSize(20);
+  text("Exit Game", width / 2, btnY + btnHeight / 2);
+  
 }
 
 void resetGame() {

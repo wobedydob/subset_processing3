@@ -41,6 +41,9 @@ void draw() {
     case "stop":
        drawStopScreen(); 
       break;
+    default:
+      drawErrorScreen("Invalid game state given '" + gameState + "'");
+      break;
   }
   
 }
@@ -57,6 +60,9 @@ void mousePressed() {
       break;
     case "stop":
        handleStopState(); 
+      break;
+    default:
+      handleErrorState();
       break;
   }
   
