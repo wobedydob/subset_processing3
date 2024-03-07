@@ -1,6 +1,9 @@
+final int screenHeight = 600;
+final int screenWidth = 600;
+
 /** SETUP FUNCTION */
 void setup() {
-  size(600, 600);
+  size(screenWidth, screenHeight);
   
   if (testing) {
     initializeTesting();
