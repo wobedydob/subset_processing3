@@ -1,6 +1,6 @@
 /** SETUP FUNCTION */
 void setup() {
-  size(600, 600);
+  size(600, 600); // width, height
   
   if (testing) {
     initializeTesting();

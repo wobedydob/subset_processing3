@@ -104,10 +104,20 @@ boolean cardExists(String card) {
 
   // Extract eigenschappen van de kaart
   String number = card.substring(0, 1);
+  int intNumber = 0;
+  
+  try {
+    intNumber = Integer.parseInt(number);
+  } catch (NumberFormatException e) {
+    println(e);
+    throwError("'number' is not an integer '" + number + "'", false);
+  }
+  
+  
   String colorCode = card.substring(1, 2);
   String shape = card.substring(2, 3);
 
-  boolean numberExists = numberExists(number);
+  boolean numberExists = numberExists(intNumber);
   boolean colorExists = colorExists(colorCode);
   boolean shapeExists = shapeExists( shape);
   
@@ -118,11 +128,11 @@ boolean cardExists(String card) {
   return true;
 }
 
-boolean numberExists(String number) 
+boolean numberExists(int number) 
 {
   boolean numberExists = false;
   for (int num : numbers) {
-    if (Integer.toString(num).equals(number)) {
+    if (num == number) {
       numberExists = true;
       break;
     }

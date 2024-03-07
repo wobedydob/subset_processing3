@@ -30,11 +30,29 @@ String[] generateDeck(String[] shapes, String[] colors, int[] numbers) {
   int index = 0;
 
   for (int number : numbers) {
-    for (String shape : shapes) {
-      for (String cardColor : colors) {
-        deck[index++] = number + cardColor + shape;
-      }
+    
+    if(!numberExists(number)) {
+      throwError("Invalid value for card 'number' " + number + "'", true);
     }
+    
+    for (String shape : shapes) {
+
+      if(!shapeExists(shape)) {
+        throwError("Invalid value for card 'shape' '" + shape + "'", true);
+      }      
+      
+      for (String cardColor : colors) {
+        
+        if(!colorExists(cardColor)) {
+          throwError("Invalid value for card 'cardColor' " + cardColor + "'", true);
+        }           
+        
+        String card = number + cardColor + shape;
+        deck[index++] = card;
+      }
+      
+    }
+    
   }
   
   return deck;

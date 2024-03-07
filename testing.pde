@@ -1,6 +1,6 @@
 boolean testing = false; // set to true to test
 
-String testGameState = "start";
+String testGameState = "playing";
 String[] testShapes = {"T", "R", "E"};
 String[] testColors = {"R", "G", "B"};
 int[] testNumbers = {1, 2, 3};
@@ -25,7 +25,7 @@ void testGenerateDeck() {
   println("~testGenerateDeck()");
   
   testDeck = generateDeck(testShapes, testColors, testNumbers);
-  
+
   if (testDeck.length != 27) {
     throwError("Invalid deck.length given '" + testDeck.length + "'", false);
     return;
