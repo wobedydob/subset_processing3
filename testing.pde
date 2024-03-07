@@ -1,4 +1,4 @@
-boolean testing = true; // set to true to test
+boolean testing = false; // set to true to test
 
 String testGameState = "start";
 String[] testShapes = {"T", "R", "E"};

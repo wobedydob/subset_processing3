@@ -109,18 +109,6 @@ void handleStopState() {
   
 }
 
-void handleErrorState() {
-
-  int btnX = (width - btnWidth) / 2;
-  int btnY = height / 2 + 50;
-  
-  // check if exit button is pressed
-  if (mouseX >= btnX && mouseX <= btnX + btnWidth && mouseY >= btnY && mouseY <= btnY + btnHeight) {
-    exit();
-  }
-  
-}
-
 /** GAME LOGIC FUNCTIONS */
 void replaceCards(ArrayList<Integer> selectedCards) {
     for (int index : selectedCards) {

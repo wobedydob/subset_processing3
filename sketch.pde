@@ -15,13 +15,14 @@ void setup() {
 /** DRAW FUNCTION */
 void draw() {
   background(white);
-  setsOnTable = calculateSetsOnTable(boardCards);
+
   
     switch(gameState) {
     case "start":
       drawStartupScreen();
       break;
     case "playing":
+      setsOnTable = calculateSetsOnTable(boardCards);
       drawPlayingScreen();
       break;
     case "stop":
@@ -48,7 +49,7 @@ void mousePressed() {
        handleStopState(); 
       break;
     default:
-      handleErrorState();
+      throwError("Invalid game state given '" + gameState + "'", true);
       break;
   }
   
