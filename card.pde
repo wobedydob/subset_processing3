@@ -99,10 +99,9 @@ color getColor(String colorCode) {
 
 boolean cardExists(String card) {
   if (card == null || card.length() != 3) {
-    return false; // Ongeldige kaartformat
+    return false; 
   }
 
-  // Extract eigenschappen van de kaart
   String number = card.substring(0, 1);
   int intNumber = 0;
   

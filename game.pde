@@ -109,6 +109,18 @@ void handleStopState() {
   
 }
 
+void handleErrorState() {
+
+  int btnX = (width - btnWidth) / 2;
+  int btnY = height / 2 + 50;
+  
+  // check if exit button is pressed
+  if (mouseX >= btnX && mouseX <= btnX + btnWidth && mouseY >= btnY && mouseY <= btnY + btnHeight) {
+    exit();
+  }
+  
+}
+
 /** GAME LOGIC FUNCTIONS */
 void replaceCards(ArrayList<Integer> selectedCards) {
     for (int index : selectedCards) {
@@ -316,21 +328,33 @@ boolean isValidSet(ArrayList<Integer> selectedCards, String[] deck) {
 }
 
 int calculateSetsOnTable(String[] boardCards) {
+  
   int setsCount = 0;
-  for (int i = 0; i < boardCards.length - 2; i++) {
-    for (int j = i + 1; j < boardCards.length - 1; j++) {
-      for (int k = j + 1; k < boardCards.length; k++) {
+  for (int i = 0; i < boardCards.length - 2; i++) { // first card
+    
+    for (int j = i + 1; j < boardCards.length - 1; j++) { // second card
+      
+      for (int k = j + 1; k < boardCards.length; k++) { // third card
+        
         ArrayList<Integer> selectedCards = new ArrayList<Integer>();
+        
         if (!boardCards[i].equals("removed") && !boardCards[j].equals("removed") && !boardCards[k].equals("removed")) {
+          
           selectedCards.add(i);
           selectedCards.add(j);
           selectedCards.add(k);
+          
           if (isValidSet(selectedCards, boardCards)) {
             setsCount++;
           }
+          
         }
+        
       }
+      
     }
+    
   }
+  
   return setsCount;
 }
