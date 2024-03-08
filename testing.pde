@@ -1,21 +1,22 @@
-boolean testing = false; // set to true to test
+boolean testing = true; // set to true to test
 
-String testGameState = "playing";
+String testGameState = "start";
+
 String[] testShapes = {"T", "R", "E"};
 String[] testColors = {"R", "G", "B"};
 int[] testNumbers = {1, 2, 3};
-String[] testDeck;
+String[] testDeck = {};
 
-int[] set = {0, 1, 2};
+int[] testSet = {0, 1, 2};
 
 void initializeTesting() {
     println("---TESTING BEGINS HERE---");
     
-    testGenerateDeck();
-    testShuffleDeck(testDeck);
-    testIsValidSet(set);
     testGameState(testGameState);
-    
+    testGenerateDeck();
+    testShuffleDeck(testDeck); 
+    testIsValidSet(testSet);
+
     println("---TESTING ENDS HERE---");
     exit();
 }
@@ -95,7 +96,7 @@ void testIsValidSet(int[] testSet) {
 
   // check if validSetDiff is a valid set in testDeck
   if (isValidSet(set, testDeck)) {
-      println("[SUCCESS] '" + set + "' is a valid set found in 'testDeck'.");
+      println("[SUCCESS] '" + set + "' are valid indexes for a valid set found in 'testDeck'.");
   } else {
      throwError("'" + set + "' is not a valid set found in 'testDeck'.", false);
   }

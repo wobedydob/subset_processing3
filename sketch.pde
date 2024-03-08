@@ -15,7 +15,6 @@ void setup() {
 /** DRAW FUNCTION */
 void draw() {
   background(white);
-
   
     switch(gameState) {
     case "start":
