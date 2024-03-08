@@ -46,7 +46,7 @@ String[] generateDeck(String[] shapes, String[] colors, int[] numbers) {
       for (String cardColor : colors) {
         
         if(!colorExists(cardColor)) {
-          throwError("Invalid value for card 'cardColor' " + cardColor + "'", true);
+          throwError("Invalid value for card 'cardColor' '" + cardColor + "'", true);
         }           
         
         String card = number + cardColor + shape;
