@@ -4,8 +4,10 @@ String[] colors = {"R", "G", "B"};
 int[] numbers = {1, 2, 3};
 String[] deck;
 int maxAmountOfCards = shapes.length * colors.length * numbers.length;
-int cardWidth, cardHeight;
-int gridRows = 3, gridCols = 3;
+int cardWidth;
+int cardHeight;
+int gridRows = 3;
+int gridCols = 3;
 
 /** DECK FUNCTIONS */
 void drawDeck() {

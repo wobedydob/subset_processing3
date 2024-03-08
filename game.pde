@@ -10,7 +10,10 @@ int selectedSetSize = 3;
 ArrayList<Integer> selectedCards = new ArrayList<Integer>();
 String[] boardCards = new String[gridRows * gridCols];
 ArrayList<String> remainingDeck = new ArrayList<String>();
-int statusBarHeight = 80, setsFound = 0, remainingCards, setsOnTable;
+int statusBarHeight = 80; 
+int setsFound = 0; 
+int remainingCards;
+int setsOnTable;
 
 void initializeGame() {  
   // calculate width and height
